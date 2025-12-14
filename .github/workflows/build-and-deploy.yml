@@ -28,6 +28,11 @@ jobs:
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
           echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
           chmod 600 private.key gpg_passphrase.txt
+      
+      - name: Prepare GPG public key
+        run: |
+          echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > public.key
+          chmod 644 public.key
 
       - name: Build & Push Docker image
         env:

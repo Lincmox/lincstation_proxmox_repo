@@ -19,7 +19,7 @@ RUN --mount=type=secret,id=gpg_private \
         --passphrase-file /run/secrets/gpg_pass \
         --import /run/secrets/gpg_private
 
-COPY gpg/public.key /repo/public.key
+COPY public.key /repo/public.key
 
 COPY packages/ /tmp/packages/
 RUN reprepro includedeb bookworm /tmp/packages/*.deb
