@@ -11,12 +11,14 @@ RUN apt update && apt install -y \
 WORKDIR /repo
 COPY conf/ /repo/conf/
 
+# Remplacer SignWith par le key ID
 ARG GPG_KEY_ID
 RUN sed -i "s/^SignWith:.*$/SignWith: $GPG_KEY_ID/" /repo/conf/distributions
 
-RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && \
-    echo "allow-loopback-pinentry" > /root/.gnupg/gpg.conf
+# Créer dossier GNUPG
+RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
 
+# Importer clé privée en batch, loopback
 RUN --mount=type=secret,id=gpg_private \
     --mount=type=secret,id=gpg_pass \
     gpg --batch --yes \
@@ -24,12 +26,18 @@ RUN --mount=type=secret,id=gpg_private \
         --passphrase-file /run/secrets/gpg_pass \
         --import /run/secrets/gpg_private
 
+# Copier clé publique
 COPY public.key /repo/public.key
 
+# Copier paquets
 COPY packages/ /tmp/packages/
 
-ENV GNUPG_TTY=/dev/console
-RUN reprepro includedeb bookworm /tmp/packages/*.deb
+# Forcer reprepro à utiliser GPG en mode loopback
+ENV GNUPGHOME=/root/.gnupg
+ENV GPG_TTY=/dev/console
+ENV REPREPRO_GPG_OPTIONS="--pinentry-mode loopback"
+
+RUN reprepro -V includedeb bookworm /tmp/packages/*.deb
 RUN reprepro export
 
 # ---------- STAGE 2 : nginx ----------
