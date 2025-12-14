@@ -6,6 +6,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y \
     reprepro \
     gnupg \
+    gnupg2 \
+    pinentry-curses \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /repo
