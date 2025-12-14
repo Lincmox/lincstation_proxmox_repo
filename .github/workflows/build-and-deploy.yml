@@ -1,0 +1,61 @@
+name: Build & Deploy LincMox Repo
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ghcr.io/lincmox/lincstation_proxmox_repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Prepare GPG secrets
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+          echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
+          chmod 600 private.key gpg_passphrase.txt
+
+      - name: Build & Push Docker image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          docker build \
+            --secret id=gpg_private,src=private.key \
+            --secret id=gpg_pass,src=gpg_passphrase.txt \
+            -t $IMAGE_NAME:latest \
+            .
+          docker push $IMAGE_NAME:latest
+
+      - name: Cleanup secrets
+        if: always()
+        run: shred -u private.key gpg_passphrase.txt || true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy on server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/ubuntu/docker/lincmox
+            docker compose pull
+            docker compose up -d

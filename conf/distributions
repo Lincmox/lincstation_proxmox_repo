@@ -1,0 +1,8 @@
+Origin: LincMox Repository
+Label: lincmox
+Suite: stable
+Codename: bookworm
+Architectures: amd64
+Components: main
+Description: Repository for LincStation driver and tools for Proxmox VE
+SignWith: yes
