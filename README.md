@@ -3,11 +3,11 @@
 ## Setup
 
 gpg --full-generate-key
-gpg --export-secret-keys GPG_KEY_ID > gpg/private.key
-chmod 600 gpg/private.key
-gpg --export GPG_KEY_ID > gpg/public.key
-echo "GPG_PASSPHRASE" > gpg/gpg_passphrase.txt
-chmod 600 gpg/gpg_passphrase.txt
+gpg --export-secret-keys GPG_KEY_ID > private.key
+base64 -w0 private.key
+chmod 600 private.key
+gpg --export GPG_KEY_ID > public.key
+base64 -w0 public.key
 export DOCKER_BUILDKIT=1
 chmod +x deploy.sh
 ./deploy.sh

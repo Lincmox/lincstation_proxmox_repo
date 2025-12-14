@@ -22,18 +22,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Prepare GPG secrets
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
-          echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
-          chmod 600 private.key gpg_passphrase.txt
       
       - name: Prepare GPG public key
         run: |
           echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > public.key
           chmod 644 public.key
 
+      - name: Prepare GPG secrets
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+          chmod 600 private.key
+      
       - name: Build & Push Docker image
         env:
           DOCKER_BUILDKIT: 1
@@ -41,14 +40,13 @@ jobs:
           docker build \
             --build-arg GPG_KEY_ID=${{ secrets.GPG_KEY_ID }} \
             --secret id=gpg_private,src=private.key \
-            --secret id=gpg_pass,src=gpg_passphrase.txt \
             -t $IMAGE_NAME:latest \
             .
           docker push $IMAGE_NAME:latest
 
       - name: Cleanup secrets
         if: always()
-        run: shred -u private.key gpg_passphrase.txt || true
+        run: shred -u private.key || true
 
   deploy:
     needs: build
