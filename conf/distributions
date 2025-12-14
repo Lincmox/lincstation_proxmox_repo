@@ -1,7 +1,7 @@
-Origin: LincMox Repository
+Origin: Lincmox
 Label: lincmox
 Suite: stable
-Codename: bookworm
+Codename: trixie
 Architectures: amd64
 Components: main
 Description: Repository for LincStation driver and tools for Proxmox VE

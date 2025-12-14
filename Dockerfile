@@ -1,5 +1,5 @@
 # ---------- STAGE 1 : build + signature ----------
-FROM debian:bookworm AS builder
+FROM debian:trixie AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -35,7 +35,7 @@ ENV GNUPGHOME=/root/.gnupg
 ENV REPREPRO_GPG_OPTIONS="--batch"
 
 # Ajouter les paquets et exporter l'index
-RUN reprepro includedeb bookworm /tmp/packages/*.deb
+RUN reprepro includedeb trixie /tmp/packages/*.deb
 RUN reprepro export
 
 # ---------- STAGE 2 : nginx ----------

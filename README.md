@@ -15,6 +15,6 @@ chmod +x deploy.sh
 ## Installation
 
 curl -fsSL https://repo.lincmox.ovh/public.key | sudo gpg --dearmor -o /usr/share/keyrings/lincmox.gpg
-echo "deb [signed-by=/usr/share/keyrings/lincmox.gpg] https://repo.lincmox.ovh bookworm main" | sudo tee /etc/apt/sources.list.d/lincmox.list
+echo "deb [signed-by=/usr/share/keyrings/lincmox.gpg] https://repo.lincmox.ovh trixie main" | sudo tee /etc/apt/sources.list.d/lincmox.list
 sudo apt update
 sudo apt install lincstation-proxmox
