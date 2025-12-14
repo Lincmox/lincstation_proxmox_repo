@@ -14,8 +14,7 @@ COPY conf/ /repo/conf/
 ARG GPG_KEY_ID
 RUN sed -i "s/^SignWith:.*$/SignWith: $GPG_KEY_ID/" /repo/conf/distributions
 
-RUN mkdir -p /root/.gnupg && \
-    chmod 700 /root/.gnupg && \
+RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && \
     echo "allow-loopback-pinentry" > /root/.gnupg/gpg.conf
 
 RUN --mount=type=secret,id=gpg_private \
@@ -28,6 +27,8 @@ RUN --mount=type=secret,id=gpg_private \
 COPY public.key /repo/public.key
 
 COPY packages/ /tmp/packages/
+
+ENV GNUPG_TTY=/dev/console
 RUN reprepro includedeb bookworm /tmp/packages/*.deb
 RUN reprepro export
 
