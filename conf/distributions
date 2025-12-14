@@ -5,4 +5,4 @@ Codename: bookworm
 Architectures: amd64
 Components: main
 Description: Repository for LincStation driver and tools for Proxmox VE
-SignWith: yes
+SignWith: GITHUB_SECRET_GPG_KEY_ID

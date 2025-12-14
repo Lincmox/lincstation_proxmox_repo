@@ -39,6 +39,7 @@ jobs:
           DOCKER_BUILDKIT: 1
         run: |
           docker build \
+            --build-arg GPG_KEY_ID=${{ secrets.GPG_KEY_ID }} \
             --secret id=gpg_private,src=private.key \
             --secret id=gpg_pass,src=gpg_passphrase.txt \
             -t $IMAGE_NAME:latest \

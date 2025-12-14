@@ -11,7 +11,13 @@ RUN apt update && apt install -y \
 WORKDIR /repo
 COPY conf/ /repo/conf/
 
-# 🔐 Import clé GPG (secret)
+ARG GPG_KEY_ID
+RUN sed -i "s/^SignWith:.*$/SignWith: $GPG_KEY_ID/" /repo/conf/distributions
+
+RUN mkdir -p /root/.gnupg && \
+    chmod 700 /root/.gnupg && \
+    echo "allow-loopback-pinentry" > /root/.gnupg/gpg.conf
+
 RUN --mount=type=secret,id=gpg_private \
     --mount=type=secret,id=gpg_pass \
     gpg --batch --yes \
