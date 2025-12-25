@@ -1,4 +1,12 @@
-# Lincmox - LincStation Proxmox Repo
+# LincMox - LincStation Proxmox Repo
+
+![Alt text](img/lincmox_banner.png "LincMox Logo")
+
+[Full Documentation](https://doc.lincmox.ovh/)
+
+## Screenshot
+
+![Alt text](img/lincmox_cli.png "LincMox CLI")
 
 ## Setup
 
