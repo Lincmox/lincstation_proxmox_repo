@@ -36,4 +36,4 @@ echo "deb [signed-by=/usr/share/keyrings/lincmox.gpg] https://repo.lincmox.ovh t
 
 sudo apt update
 
-sudo apt install lincstation-proxmox
+sudo apt install lincmox-cli
