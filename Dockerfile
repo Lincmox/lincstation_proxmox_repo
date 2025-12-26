@@ -49,14 +49,6 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 COPY --from=builder /repo /usr/share/nginx/html
 
 # Configuration Nginx pour autoindex
-RUN echo 'server { \
-    listen 80 default_server; \
-    server_name _; \
-    root /usr/share/nginx/html; \
-    autoindex on; \
-    location / { \
-        try_files $uri $uri/ =404; \
-    } \
-}' > /etc/nginx/conf.d/repo.conf
+COPY nginx/repo.conf /etc/nginx/conf.d/repo.conf
 
 EXPOSE 80
